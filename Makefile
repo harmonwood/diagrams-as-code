@@ -7,9 +7,8 @@ CONTAINER_NAME = diagrams
 CONTAINER_ID_ENV = DAC_CONTAINER_ID
 IMAGE_NAME := $(CONTAINER_NAME)
 
-JAVA_JARS_LOCATION := /jars
-PY_DAC_CONTAINER_LOCATION := /diagrams/py
-UML_DAC_CONTAINER_LOCATION := /diagrams/uml
+JAVA_JARS_LOCATION := /opt/jars
+DAC_LOCATION := /opt/diagrams
 
 # Other config
 OK_COLOR=\033[32;01m
@@ -41,11 +40,11 @@ stop-container:
 
 generate-py:
 	@printf "$(OK_COLOR)==> Running DaC Python $(NO_COLOR)\n"
-	docker exec -t $(CONTAINER_NAME) sh -c "cd $(PY_DAC_CONTAINER_LOCATION); python3 $(filename).$(inputext)"
+	docker exec -t $(CONTAINER_NAME) sh -c "cd $(DAC_LOCATION); python3 $(filename).$(inputext)"
 
 generate-uml:
 	@printf "$(OK_COLOR)==> Running DaC UML $(NO_COLOR)\n"
-	docker exec -t $(CONTAINER_NAME) sh -c "cd $(UML_DAC_CONTAINER_LOCATION); java -jar $(JAVA_JARS_LOCATION)/plantuml.jar $(filename).$(inputext)"
+	docker exec -t $(CONTAINER_NAME) sh -c "cd $(DAC_LOCATION); java -jar $(JAVA_JARS_LOCATION)/plantuml.jar $(filename).$(inputext)"
 
 diagrams-py: generate-py
 

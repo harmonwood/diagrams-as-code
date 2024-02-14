@@ -1,3 +1,36 @@
+
+# This is a major fork of Diagrams as code.
+
+I couple of this have changed.
+
+## Run as task
+
+Now you can run this as a build task.
+set the envirionment variable:
+```
+RUN_ASK_TASK=true
+```
+
+This will automaticly build everything mounted in the /opt/diagrams directory
+
+## Diagrams directory
+
+The diagrams directory is now flat so that all the umls of any format can be read and run at the same time.
+
+## Output
+
+Any volume mount at `/opt/output` will get the resolting ping files.
+
+## plantuml.jar
+
+This file is now downloaded and installed on image build.
+Simply change the version using:
+```
+docker build -e PLANTUML_VERSION=1.2024.0 diagrams-as-code
+```
+
+.... back to your regerly secheduled programming...
+
 # dac - Diagrams as Code
 
 Combinations of Diagrams as Code tools, aiming for a minimal workflow.
