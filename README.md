@@ -1,44 +1,15 @@
+# Diagrams as Code
+Diagrams and graphs are important visual aids in any development lifecycle. This project aims at making ability to generate, change, and collaberate on these artifacts as easy as we do with code.
 
-# This is a major fork of Diagrams as code.
+The power to keep track of diagram source material. The freedom for new project members to edit them freely with oversite of pier review. Helping keep documentation and code growing togeather.
 
-I couple of this have changed.
+There are two major ways of using this repository:
+1. As a Container Compose task
+2. In a pipeline through Make files and a container runner
 
-## Run as task
 
-Now you can run this as a build task.
-set the envirionment variable:
-```
-RUN_ASK_TASK=true
-```
-
-This will automaticly build everything mounted in the /opt/diagrams directory
-
-## Diagrams directory
-
-The diagrams directory is now flat so that all the umls of any format can be read and run at the same time.
-
-## Output
-
-Any volume mount at `/opt/output` will get the resolting ping files.
-
-## plantuml.jar
-
-This file is now downloaded and installed on image build.
-Simply change the version using:
-```
-docker build -e PLANTUML_VERSION=1.2024.0 diagrams-as-code
-```
-
-.... back to your regerly secheduled programming...
-
-# dac - Diagrams as Code
-
-Combinations of Diagrams as Code tools, aiming for a minimal workflow.
-
-## Motivation
-
-Diagrams really aid understanding a software system or architecture and the tooling around such diagramming techniques are not quite straight forward or need installation of many dependencies.
-We use a minimal docker image and container to run all diagram processing.
+>[!NOTE]
+This is a major fork of [Nosahama's Diagrams as Code](https://github.com/nosahama/docker-c4-uml-diagrams) work. Special thanks to their foundational work.
 
 ## Tools
 
@@ -63,7 +34,48 @@ The project includes ability to generate diagrams from code using:
 
 ![consumer](https://user-images.githubusercontent.com/16656207/179086957-85fffea6-bd55-4d88-9598-a69f5a4d0302.png)
 
-## Workflow
+## 1. Run as task
+
+### TLDR;
+Simply use the DockerHub pre-compiled image by adding the following to a compose file:
+```
+version: '3.4'
+
+services:
+  diagram-builder-task:
+    image: harmonwood/diagrams-as-code:latest
+    container_name: diagram-builder-task
+    environment:
+      - RUN_AS_TASK=true
+    volumes:
+      - ./diagrams:/opt/diagrams
+      - ./output:/opt/output
+```
+
+That's it! The next time you run `docker compose up` or `docker compose restart diagram-builder-task` in your project. The `output` folder will have the newly built images.
+
+>[!NOTE]
+This container does exit after completion. If you are looking for a more persistant service try the [offical PlantUML Server](https://plantuml.com/server)
+
+### Details of task
+Set the envirionment variable:
+```
+RUN_ASK_TASK=true
+```
+
+This will automaticly build everything mounted in the /opt/diagrams directory
+
+### Diagrams directory
+
+The `/opt/diagrams` directory is flat so that all the umls, pumls, or py files can be read and run at the same time.
+
+Volume mount to this directory to provide diagram files to the container for parsing.
+
+### Output
+
+Any volume mount at `/opt/output` will get the resulting png files.
+
+## 2. CI/CD Workflow w/Make
 
 `make help`
 
@@ -90,3 +102,12 @@ The project includes ability to generate diagrams from code using:
 #### Stop container
 
 `make stop-container`
+
+## plantuml.jar
+
+You can change the version of the PlantUML binary during an image rebuild via the environemt variable `PLANTUML_VERSION`
+
+example:
+```
+docker build -e PLANTUML_VERSION=1.2024.0 diagrams-as-code
+```
